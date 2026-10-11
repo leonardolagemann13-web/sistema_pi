@@ -312,11 +312,14 @@ public class TelaUsuario extends JInternalFrame {
             usuario.setLogin(txtLogin.getText());
             usuario.setSenha(txtSenha.getText());
             usuario.setPerfil(cbPerfil.getSelectedItem().toString());
-
-            dao.salvar(usuario);
-            carregarTabela();
-            limparCampos();
-            JOptionPane.showMessageDialog(null,"Usuário salvo com sucesso!");
+            if (txtNome.getText().isEmpty() || txtLogin.getText().isEmpty() || txtSenha.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
+            }else {
+                dao.salvar(usuario);
+                carregarTabela();
+                limparCampos();
+                JOptionPane.showMessageDialog(null,"Usuário salvo com sucesso!");
+            }
         }catch (Exception e){
             JOptionPane.showMessageDialog(null, "Erro ao salvar usuário: " + e.getMessage());
         }
@@ -335,12 +338,16 @@ public class TelaUsuario extends JInternalFrame {
             usuario.setLogin(txtLogin.getText());
             usuario.setSenha(txtSenha.getText());
             usuario.setPerfil(cbPerfil.getSelectedItem().toString());
-            dao.atualizar(usuario);
-            JOptionPane.showMessageDialog(null,"Usuário atualizado com sucesso!");
-            carregarTabela();
-            limparCampos();
-            // Habilita novamente o botão adicionar
-            btnAdicionar.setEnabled(true);
+            if (txtNome.getText().isEmpty() || txtLogin.getText().isEmpty() || txtSenha.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
+            }else {
+                dao.atualizar(usuario);
+                JOptionPane.showMessageDialog(null,"Usuário atualizado com sucesso!");
+                carregarTabela();
+                limparCampos();
+                // Habilita novamente o botão adicionar
+                btnAdicionar.setEnabled(true);
+            }
         }catch (Exception e){
             JOptionPane.showMessageDialog(null,"Erro ao atualizar usuário: " + e.getMessage());
         }
