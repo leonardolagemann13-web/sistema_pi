@@ -90,7 +90,7 @@ public class ClienteDAO {
         return lista;
     }
 
-    // Metodo DELETE usuario
+    // Metodo DELETE cliente
     public void excluir (int id){
         String sql = "DELETE FROM clientes WHERE idCliente=?";
         try(
