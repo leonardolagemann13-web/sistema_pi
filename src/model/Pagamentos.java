@@ -58,7 +58,7 @@ public class Pagamentos {
     @Override
     public String toString(){
        if (idEncomenda != null){
-           return idEncomenda.getIdCliente().getNome();
+           return idEncomenda.getCliente().getNome();
        }
        return String.valueOf(idPagamento);
     }

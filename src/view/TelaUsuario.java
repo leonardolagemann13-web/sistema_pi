@@ -152,24 +152,24 @@ public class TelaUsuario extends JInternalFrame {
         setPreferredSize(new Dimension(1150, 655));
 
         // Costumização dos componentes
-        lblCamposObri.setFont(new Font("Tahoma", 0, 12));
+        lblCamposObri.setFont(new Font("Tahoma", Font.PLAIN, 12));
         lblCamposObri.setText("* Campos obrigatórios");
 
-        lblNome.setFont(new Font("Tahoma", 0, 14));
+        lblNome.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblNome.setText("* Nome");
-        txtLogin.setFont(new Font("Tahoma", 0, 12));
+        txtNome.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
-        lblLogin.setFont(new Font("Tahoma", 0, 14));
+        lblLogin.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblLogin.setText("* Login");
-        txtNome.setFont(new Font("Tahoma", 0, 12));
+        txtLogin.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
-        lblSenha.setFont(new Font("Tahoma", 0, 14));
+        lblSenha.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblSenha.setText("* Senha");
-        txtSenha.setFont(new Font("Tahoma", 0, 12));
+        txtSenha.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
-        lblPerfil.setFont(new Font("Tahoma", 0, 14));
+        lblPerfil.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblPerfil.setText("* Perfil");
-        cbPerfil.setFont(new Font("Tahoma", 0, 12));
+        cbPerfil.setFont(new Font("Tahoma", Font.PLAIN, 12));
         cbPerfil.setModel(new DefaultComboBoxModel<>(new String[] { "user", "admin" }));
 
         txtPesquisar.addKeyListener(new KeyAdapter() {
@@ -182,7 +182,9 @@ public class TelaUsuario extends JInternalFrame {
 
         // Costumizando os botões
         btnAdicionar.setIcon(new ImageIcon(getClass().getResource("/icones/create.png")));
+        // Textinho de ajuda que aparece ao passar o mouse por cima do botão
         btnAdicionar.setToolTipText("Adicionar");
+        // Faz o cursor do mouse ser uma mão ao passar o mouse por cima
         btnAdicionar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnAdicionar.setPreferredSize(new Dimension(80, 80));
         // Adicionando função ao botão adicionar
@@ -194,7 +196,9 @@ public class TelaUsuario extends JInternalFrame {
         });
 
         btnEditar.setIcon(new ImageIcon(getClass().getResource("/icones/update.png")));
+        // Textinho de ajuda que aparece ao passar o mouse por cima do botão
         btnEditar.setToolTipText("Editar");
+        // Faz o cursor do mouse ser uma mão ao passar o mouse por cima
         btnEditar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnEditar.setPreferredSize(new Dimension(80, 80));
         // Adicionando função ao botão editar
@@ -206,7 +210,9 @@ public class TelaUsuario extends JInternalFrame {
         });
 
         btnExcluir.setIcon(new ImageIcon(getClass().getResource("/icones/delete.png")));
+        // Textinho de ajuda que aparece ao passar o mouse por cima do botão
         btnExcluir.setToolTipText("Excluir");
+        // Faz o cursor do mouse ser uma mão ao passar o mouse por cima
         btnExcluir.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnExcluir.setPreferredSize(new Dimension(80, 80));
         // Adicionando função ao botão excluir

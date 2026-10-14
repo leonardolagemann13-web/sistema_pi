@@ -3,7 +3,7 @@ package model;
 public class Encomendas {
     // Declaração dos atributos da classe
     private int idEncomenda;
-    private Clientes idCliente;
+    private Clientes cliente;
     private String dataPedido;
     private String dataPrevisao;
     private String dataPrevisaoPagamento;
@@ -19,8 +19,8 @@ public class Encomendas {
         return idEncomenda;
     }
 
-    public Clientes getIdCliente() {
-        return idCliente;
+    public Clientes getCliente() {
+        return cliente;
     }
 
     public String getDataPedido() {
@@ -53,8 +53,8 @@ public class Encomendas {
         this.idEncomenda = idEncomenda;
     }
 
-    public void setIdCliente(Clientes idCliente) {
-        this.idCliente = idCliente;
+    public void setCliente(Clientes cliente) {
+        this.cliente = cliente;
     }
 
     public void setDataPedido(String dataPedido) {
@@ -84,8 +84,8 @@ public class Encomendas {
     // Para aparecer no ComboBox
     @Override
     public String toString(){
-        if (idCliente != null){
-            return idCliente.getNome();
+        if (cliente != null){
+            return cliente.getNome();
         }
         return String.valueOf(idEncomenda);
     }

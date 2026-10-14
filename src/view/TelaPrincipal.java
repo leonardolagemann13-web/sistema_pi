@@ -100,6 +100,12 @@ public class TelaPrincipal extends JFrame {
 
         cadClientes.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
         cadClientes.setText("Clientes");
+        cadClientes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuCadastrarCliente();
+            }
+        });
         cadastroMenu.add(cadClientes);
 
         cadUsuarios.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_MASK));
@@ -224,9 +230,39 @@ public class TelaPrincipal extends JFrame {
                 lblLinhaTempo.setText("Menu Principal");
             }
         });
-
-
         // Adiciona a tela ao desktop
         desktop.add(usuario);
+    }
+    // Metodo que abre a tela de cadastro de clientes
+    private void menuCadastrarCliente(){
+        TelaCliente cliente = new TelaCliente();
+        // Atualiza a linha do tempo quando é aberto a tela Clientes
+        lblLinhaTempo.setText("Menu Principal > Cadastro > Clientes");
+        cliente.setVisible(true);
+
+        // bloqueia o arraste da tela
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) cliente.getUI();
+        for (MouseMotionListener l : ui.getNorthPane().getMouseMotionListeners()) {
+            ui.getNorthPane().removeMouseMotionListener(l);
+        }
+
+        // Metodos que editam a linha do tempo quando a janela clientes é fechada, minimaza e maximizada
+        cliente.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameIconified(InternalFrameEvent e) {
+                lblLinhaTempo.setText("Menu Principal");
+            }
+            @Override
+            public void internalFrameDeiconified(InternalFrameEvent e) {
+                // O que acontece quando a janela é RESTAURADA (volta ao normal)
+                lblLinhaTempo.setText("Menu Principal > Cadastro > Clientes");
+            }
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+                lblLinhaTempo.setText("Menu Principal");
+            }
+        });
+        // Adiciona a tela ao desktop
+        desktop.add(cliente);
     }
 }

@@ -6,9 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import net.proteanit.sql.DbUtils;
-import javax.swing.*;
-
 public class UsuarioDAO {
 
     // Autenticacao
@@ -143,23 +140,5 @@ public class UsuarioDAO {
             e.printStackTrace();
         }
         return lista;
-    }
-
-    // Metodo contar usuarios
-    public int contar(){
-        String sql = "SELECT COUNT(*) total FROM usuarios";
-        try(
-            Connection conexao = ConnectionFactory.getConnection();
-            PreparedStatement ps = conexao.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()
-        ){
-            if (rs.next()){
-                return rs.getInt("total");
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        // Caso o erro
-        return 0;
     }
 }
