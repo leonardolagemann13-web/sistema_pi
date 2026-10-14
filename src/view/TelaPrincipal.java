@@ -96,6 +96,12 @@ public class TelaPrincipal extends JFrame {
         cadastroMenu.setText("Cadastro");
         cadProdutos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
         cadProdutos.setText("Produtos");
+        cadProdutos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuCadastrarProduto();
+            }
+        });
         cadastroMenu.add(cadProdutos);
 
         cadClientes.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
@@ -202,7 +208,30 @@ public class TelaPrincipal extends JFrame {
         lblData.setText(formatador.format(data));
     }
 
+    // Minimiza todas as telas abertas, exceto a que foi passada
+    private void minimizarOutras(JDesktopPane desktop, JInternalFrame manter){
+        for (JInternalFrame frame : desktop.getAllFrames()){
+            if (frame != manter && frame.isIconifiable()){
+                try {
+                    frame.setIcon(true);
+                } catch (java.beans.PropertyVetoException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // Fecha todas as janelas abertas do tipo informado
+    private void fecharAnterior(JDesktopPane desktop, Class<? extends JInternalFrame> tipo){
+        for (JInternalFrame frame : desktop.getAllFrames()){
+            if (tipo.isInstance(frame)){
+                frame.dispose();
+            }
+        }
+    }
+
     private void menuCadastrarUsuario(ActionEvent evento){
+        fecharAnterior(desktop,TelaUsuario.class);
         TelaUsuario usuario = new TelaUsuario();
         // Atualiza a linha do tempo quando é aberto a tela Usuários
         lblLinhaTempo.setText("Menu Principal > Cadastro > Usuários");
@@ -232,9 +261,11 @@ public class TelaPrincipal extends JFrame {
         });
         // Adiciona a tela ao desktop
         desktop.add(usuario);
+        minimizarOutras(desktop,usuario);
     }
     // Metodo que abre a tela de cadastro de clientes
     private void menuCadastrarCliente(){
+        fecharAnterior(desktop,TelaCliente.class);
         TelaCliente cliente = new TelaCliente();
         // Atualiza a linha do tempo quando é aberto a tela Clientes
         lblLinhaTempo.setText("Menu Principal > Cadastro > Clientes");
@@ -264,5 +295,41 @@ public class TelaPrincipal extends JFrame {
         });
         // Adiciona a tela ao desktop
         desktop.add(cliente);
+        minimizarOutras(desktop,cliente);
+    }
+
+    // Metodo que abre a tela de cadastro de produtos
+    private void menuCadastrarProduto(){
+        fecharAnterior(desktop,TelaProdutos.class);
+        TelaProdutos produto = new TelaProdutos();
+        // Atualiza a linha do tempo quando é aberto a tela produtos
+        lblLinhaTempo.setText("Menu Principal > Cadastro > Produtos");
+        produto.setVisible(true);
+
+        // bloqueia o arraste da tela
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) produto.getUI();
+        for (MouseMotionListener l : ui.getNorthPane().getMouseMotionListeners()) {
+            ui.getNorthPane().removeMouseMotionListener(l);
+        }
+
+        // Metodos que editam a linha do tempo quando a janela produtos é fechada, minimaza e maximizada
+        produto.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameIconified(InternalFrameEvent e) {
+                lblLinhaTempo.setText("Menu Principal");
+            }
+            @Override
+            public void internalFrameDeiconified(InternalFrameEvent e) {
+                // O que acontece quando a janela é RESTAURADA (volta ao normal)
+                lblLinhaTempo.setText("Menu Principal > Cadastro > Produto");
+            }
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+                lblLinhaTempo.setText("Menu Principal");
+            }
+        });
+        // Adiciona a tela ao desktop
+        desktop.add(produto);
+        minimizarOutras(desktop,produto);
     }
 }

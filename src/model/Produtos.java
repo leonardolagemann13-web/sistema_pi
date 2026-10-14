@@ -5,6 +5,7 @@ public class Produtos {
     private int idProduto;
     private String nome;
     private double preco;
+    private String caracteristicas;
 
     // Getters e Setter
 
@@ -21,6 +22,10 @@ public class Produtos {
         return preco;
     }
 
+    public String getCaracteristicas() {
+        return caracteristicas;
+    }
+
     // Setters
     public void setIdProduto(int idProduto) {
         this.idProduto = idProduto;
@@ -32,6 +37,10 @@ public class Produtos {
 
     public void setPreco(double preco) {
         this.preco = preco;
+    }
+
+    public void setCaracteristicas(String caracteristicas) {
+        this.caracteristicas = caracteristicas;
     }
 
     // Para exibir os produtos no ComboBox

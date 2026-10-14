@@ -35,6 +35,7 @@ public class ClienteDAO {
             ps.setString(3,cliente.getContato());
             ps.setString(4,cliente.getEndereco());
             ps.setInt(5,cliente.getIdCliente());
+            ps.execute();
         }catch (Exception e){
             e.printStackTrace();
         }

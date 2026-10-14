@@ -1,12 +1,11 @@
 package view;
-import dao.UsuarioDAO;
+import dao.ClienteDAO;
 import model.Clientes;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import dao.ClienteDAO;
 
 public class TelaCliente extends JInternalFrame {
 
@@ -83,17 +82,23 @@ public class TelaCliente extends JInternalFrame {
         }
     }
 
+    // devolve o texto da célula, ou "" se for nulo
+    private String valorCelula(int linha, int coluna){
+        Object valor = modelo.getValueAt(linha, coluna);
+        return valor == null ? "" : valor.toString();
+    }
+
     // Metodo que adiciona os dados nos campos
     private void preencherCampos(){
         // Obtem linha selecionada
         int linha = tabela.getSelectedRow();
         if (linha >= 0){
             // Armazena o ID
-            idSelecionado = Integer.parseInt(modelo.getValueAt(linha,0).toString());
-            txtNome.setText(modelo.getValueAt(linha,1).toString());
-            txtSobrenome.setText(modelo.getValueAt(linha,2).toString());
-            txtContato.setText(modelo.getValueAt(linha,3).toString());
-            txtEndereco.setText(modelo.getValueAt(linha,4).toString());
+            idSelecionado = Integer.parseInt(valorCelula(linha,0));
+            txtNome.setText(valorCelula(linha,1));
+            txtSobrenome.setText(valorCelula(linha,2));
+            txtContato.setText(valorCelula(linha,3));
+            txtEndereco.setText(valorCelula(linha,4));
             // Desabilita o botão adicionar para evitar bugs
             btnAdicionar.setEnabled(false);
         }
