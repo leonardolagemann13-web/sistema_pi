@@ -53,6 +53,9 @@ public class TelaLogin extends JFrame {
     private void componentes() {
 
         setTitle("Login");
+        // Define o ícone da janela
+        ImageIcon iconeTitulo = new ImageIcon(getClass().getResource("/icones/queijoTitulo.png"));
+        setIconImage(iconeTitulo.getImage());
 
         // Adicionando variaveis
         lblSenha = new JLabel();

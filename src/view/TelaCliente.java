@@ -1,12 +1,11 @@
 package view;
-import dao.UsuarioDAO;
+import dao.ClienteDAO;
 import model.Clientes;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import dao.ClienteDAO;
 
 public class TelaCliente extends JInternalFrame {
 
@@ -83,17 +82,23 @@ public class TelaCliente extends JInternalFrame {
         }
     }
 
+    // devolve o texto da célula, ou "" se for nulo
+    private String valorCelula(int linha, int coluna){
+        Object valor = modelo.getValueAt(linha, coluna);
+        return valor == null ? "" : valor.toString();
+    }
+
     // Metodo que adiciona os dados nos campos
     private void preencherCampos(){
         // Obtem linha selecionada
         int linha = tabela.getSelectedRow();
         if (linha >= 0){
             // Armazena o ID
-            idSelecionado = Integer.parseInt(modelo.getValueAt(linha,0).toString());
-            txtNome.setText(modelo.getValueAt(linha,1).toString());
-            txtSobrenome.setText(modelo.getValueAt(linha,2).toString());
-            txtContato.setText(modelo.getValueAt(linha,3).toString());
-            txtEndereco.setText(modelo.getValueAt(linha,4).toString());
+            idSelecionado = Integer.parseInt(valorCelula(linha,0));
+            txtNome.setText(valorCelula(linha,1));
+            txtSobrenome.setText(valorCelula(linha,2));
+            txtContato.setText(valorCelula(linha,3));
+            txtEndereco.setText(valorCelula(linha,4));
             // Desabilita o botão adicionar para evitar bugs
             btnAdicionar.setEnabled(false);
         }
@@ -173,15 +178,8 @@ public class TelaCliente extends JInternalFrame {
         // Metodo que pesquisa o cliente pelo nome
         txtPesquisa.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyReleased(KeyEvent e) {
                 preencherTabela(dao.pesquisar(txtPesquisa.getText()));
-            }
-        });
-        // Metodo que pesquisa o cliente pelo sobrenome
-        txtPesquisa.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e){
-                preencherTabela(dao.pesquisar_sobrenome(txtPesquisa.getText()));
             }
         });
         iconePesquisa.setIcon(new ImageIcon(getClass().getResource("/icones/pesquisar.png")));
@@ -338,6 +336,7 @@ public class TelaCliente extends JInternalFrame {
             cliente.setSobrenome(txtSobrenome.getText());
             cliente.setContato(txtContato.getText());
             cliente.setEndereco(txtEndereco.getText());
+            // Verifica se os campos obrigatórios estão preenchidos
             if (txtNome.getText().isEmpty() || txtSobrenome.getText().isEmpty()){
                 JOptionPane.showMessageDialog(null,"Preencha todos os campos obrigatórios");
             }else {
@@ -355,6 +354,7 @@ public class TelaCliente extends JInternalFrame {
     // Metodo do botão editar cliente
     private void editar(ActionEvent evt){
         try{
+            // Verifica se um cliente foi selecionado
             if (idSelecionado == 0){
                 JOptionPane.showMessageDialog(null,"Selecione um Cliente.");
                 return;
@@ -365,6 +365,7 @@ public class TelaCliente extends JInternalFrame {
             cliente.setSobrenome(txtSobrenome.getText());
             cliente.setContato(txtContato.getText());
             cliente.setEndereco(txtEndereco.getText());
+            // Verifica se os campos obrigatórios estão preenchidos
             if (txtNome.getText().isEmpty() || txtSobrenome.getText().isEmpty()){
                 JOptionPane.showMessageDialog(null,"Preencha todos os campos obrigatórios");
             }else {
@@ -383,6 +384,7 @@ public class TelaCliente extends JInternalFrame {
     // Metodo do botão excluir cliente
     private void excluir(ActionEvent evt){
         try{
+            // Verifica se um cliente foi selecionado
             if (idSelecionado == 0){
                 JOptionPane.showMessageDialog(null,"Selecione um cliente");
                 return;

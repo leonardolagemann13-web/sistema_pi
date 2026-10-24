@@ -1,15 +1,18 @@
 package model;
 
+import java.time.LocalDate;
+
 public class Encomendas {
     // Declaração dos atributos da classe
     private int idEncomenda;
     private Clientes cliente;
-    private String dataPedido;
-    private String dataPrevisao;
-    private String dataPrevisaoPagamento;
+    private LocalDate dataPedido;
+    private LocalDate dataPrevisao;
+    private LocalDate dataPrevisaoPagamento;
     private String tipoEntrega;
     private String statusEntrega;
     private String statusPagamento;
+    private double frete;
 
     // Getters e Setters
 
@@ -19,19 +22,19 @@ public class Encomendas {
         return idEncomenda;
     }
 
-    public Clientes getCliente() {
+    public Clientes getIdCliente() {
         return cliente;
     }
 
-    public String getDataPedido() {
+    public LocalDate getDataPedido() {
         return dataPedido;
     }
 
-    public String getDataPrevisaoPagamento() {
+    public LocalDate getDataPrevisaoPagamento() {
         return dataPrevisaoPagamento;
     }
 
-    public String getDataPrevisao() {
+    public LocalDate getDataPrevisao() {
         return dataPrevisao;
     }
 
@@ -47,6 +50,9 @@ public class Encomendas {
         return statusEntrega;
     }
 
+    public double getFrete() {
+        return frete;
+    }
     // Setters
 
     public void setIdEncomenda(int idEncomenda) {
@@ -57,15 +63,15 @@ public class Encomendas {
         this.cliente = cliente;
     }
 
-    public void setDataPedido(String dataPedido) {
+    public void setDataPedido(LocalDate dataPedido) {
         this.dataPedido = dataPedido;
     }
 
-    public void setDataPrevisao(String dataPrevisao) {
+    public void setDataPrevisao(LocalDate dataPrevisao) {
         this.dataPrevisao = dataPrevisao;
     }
 
-    public void setDataPrevisaoPagamento(String dataPrevisaoPagamento) {
+    public void setDataPrevisaoPagamento(LocalDate dataPrevisaoPagamento) {
         this.dataPrevisaoPagamento = dataPrevisaoPagamento;
     }
 
@@ -79,6 +85,10 @@ public class Encomendas {
 
     public void setStatusPagamento(String statusPagamento) {
         this.statusPagamento = statusPagamento;
+    }
+
+    public void setFrete(double frete) {
+        this.frete = frete;
     }
 
     // Para aparecer no ComboBox

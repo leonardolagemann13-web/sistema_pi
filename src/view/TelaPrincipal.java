@@ -62,8 +62,11 @@ public class TelaPrincipal extends JFrame {
         opcoesMenu = new JMenu();
         opcSair = new JMenuItem();
 
+        // Definições da tela
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Sistema de Venda de Produtos Agrícolas");
+        ImageIcon iconeTitulo = new ImageIcon(getClass().getResource("/icones/queijoTitulo.png"));
+        setIconImage(iconeTitulo.getImage());
         setSize(new Dimension(1159, 702));
         setLocationRelativeTo(null);
 
@@ -76,6 +79,16 @@ public class TelaPrincipal extends JFrame {
         desktopLayout.setVerticalGroup(desktopLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGap(0, 661, Short.MAX_VALUE));
         desktop.setLayout(desktopLayout);
         desktop.setVisible(true);
+
+        // Faz com que as janelas minimizadas do desktop tenham um padrão
+        desktop.setDesktopManager(new DefaultDesktopManager() {
+            @Override
+            public void iconifyFrame(JInternalFrame f) {
+                super.iconifyFrame(f);
+                JInternalFrame.JDesktopIcon icon = f.getDesktopIcon();
+                icon.setSize(220, 30);   // largura, altura
+            }
+        });
 
         lblUsuario.setText("USUÁRIO");
         lblData.setText("DATA");
@@ -96,10 +109,18 @@ public class TelaPrincipal extends JFrame {
         cadastroMenu.setText("Cadastro");
         cadProdutos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
         cadProdutos.setText("Produtos");
+        cadProdutos.setIcon(new ImageIcon(getClass().getResource("/icones/cheese.png")));
+        cadProdutos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuCadastrarProduto();
+            }
+        });
         cadastroMenu.add(cadProdutos);
 
         cadClientes.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
         cadClientes.setText("Clientes");
+        cadClientes.setIcon(new ImageIcon(getClass().getResource("/icones/clients.png")));
         cadClientes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,6 +131,7 @@ public class TelaPrincipal extends JFrame {
 
         cadUsuarios.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_MASK));
         cadUsuarios.setText("Usuários");
+        cadUsuarios.setIcon(new ImageIcon(getClass().getResource("/icones/users.png")));
         cadUsuarios.setEnabled(false);
         cadUsuarios.addActionListener(new ActionListener() {
             @Override
@@ -124,6 +146,12 @@ public class TelaPrincipal extends JFrame {
         // Definição dos atalhos do Registro
         registroMenu.setText("Registro");
         regEncomendas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.ALT_MASK));
+        regEncomendas.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuEncomenda();
+            }
+        });
         regEncomendas.setText("Encomendas");
         registroMenu.add(regEncomendas);
 
@@ -138,6 +166,12 @@ public class TelaPrincipal extends JFrame {
 
         armaEstoque.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
         armaEstoque.setText("Estoque");
+        armaEstoque.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuEstoque();
+            }
+        });
         armazenamentoMenu.add(armaEstoque);
 
         menu.add(armazenamentoMenu);
@@ -202,10 +236,31 @@ public class TelaPrincipal extends JFrame {
         lblData.setText(formatador.format(data));
     }
 
+    // Minimiza todas as telas abertas, exceto a que foi passada
+    private void minimizarOutras(JDesktopPane desktop, JInternalFrame manter){
+        for (JInternalFrame frame : desktop.getAllFrames()){
+            if (frame != manter && frame.isIconifiable()){
+                try {
+                    frame.setIcon(true);
+                } catch (java.beans.PropertyVetoException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // Fecha todas as janelas abertas do tipo informado
+    private void fecharAnterior(JDesktopPane desktop, Class<? extends JInternalFrame> tipo){
+        for (JInternalFrame frame : desktop.getAllFrames()){
+            if (tipo.isInstance(frame)){
+                frame.dispose();
+            }
+        }
+    }
+
     private void menuCadastrarUsuario(ActionEvent evento){
+        fecharAnterior(desktop,TelaUsuario.class);
         TelaUsuario usuario = new TelaUsuario();
-        // Atualiza a linha do tempo quando é aberto a tela Usuários
-        lblLinhaTempo.setText("Menu Principal > Cadastro > Usuários");
         usuario.setVisible(true);
 
         // bloqueia o arraste da tela
@@ -232,12 +287,14 @@ public class TelaPrincipal extends JFrame {
         });
         // Adiciona a tela ao desktop
         desktop.add(usuario);
+        minimizarOutras(desktop,usuario);
+        // Atualiza a linha do tempo quando é aberto a tela Usuários
+        lblLinhaTempo.setText("Menu Principal > Cadastro > Usuários");
     }
     // Metodo que abre a tela de cadastro de clientes
     private void menuCadastrarCliente(){
+        fecharAnterior(desktop,TelaCliente.class);
         TelaCliente cliente = new TelaCliente();
-        // Atualiza a linha do tempo quando é aberto a tela Clientes
-        lblLinhaTempo.setText("Menu Principal > Cadastro > Clientes");
         cliente.setVisible(true);
 
         // bloqueia o arraste da tela
@@ -264,5 +321,112 @@ public class TelaPrincipal extends JFrame {
         });
         // Adiciona a tela ao desktop
         desktop.add(cliente);
+        minimizarOutras(desktop,cliente);
+        // Atualiza a linha do tempo quando é aberto a tela Clientes
+        lblLinhaTempo.setText("Menu Principal > Cadastro > Clientes");
+    }
+
+    // Metodo que abre a tela de cadastro de produtos
+    private void menuCadastrarProduto(){
+        fecharAnterior(desktop,TelaProdutos.class);
+        TelaProdutos produto = new TelaProdutos();
+        produto.setVisible(true);
+
+        // bloqueia o arraste da tela
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) produto.getUI();
+        for (MouseMotionListener l : ui.getNorthPane().getMouseMotionListeners()) {
+            ui.getNorthPane().removeMouseMotionListener(l);
+        }
+
+        // Metodos que editam a linha do tempo quando a janela produtos é fechada, minimaza e maximizada
+        produto.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameIconified(InternalFrameEvent e) {
+                lblLinhaTempo.setText("Menu Principal");
+            }
+            @Override
+            public void internalFrameDeiconified(InternalFrameEvent e) {
+                // O que acontece quando a janela é RESTAURADA (volta ao normal)
+                lblLinhaTempo.setText("Menu Principal > Cadastro > Produto");
+            }
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+                lblLinhaTempo.setText("Menu Principal");
+            }
+        });
+        // Adiciona a tela ao desktop
+        desktop.add(produto);
+        minimizarOutras(desktop,produto);
+        // Atualiza a linha do tempo quando é aberto a tela produtos
+        lblLinhaTempo.setText("Menu Principal > Cadastro > Produtos");
+    }
+    // Metodo que abre a tela de estoque
+    private void menuEstoque(){
+        fecharAnterior(desktop,TelaEstoque.class);
+        TelaEstoque estoque = new TelaEstoque();
+        estoque.setVisible(true);
+
+        // bloqueia o arraste da tela
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) estoque.getUI();
+        for (MouseMotionListener l : ui.getNorthPane().getMouseMotionListeners()) {
+            ui.getNorthPane().removeMouseMotionListener(l);
+        }
+
+        // Metodos que editam a linha do tempo quando a janela estoque é fechada, minimaza e maximizada
+        estoque.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameIconified(InternalFrameEvent e) {
+                lblLinhaTempo.setText("Menu Principal");
+            }
+            @Override
+            public void internalFrameDeiconified(InternalFrameEvent e) {
+                // O que acontece quando a janela é RESTAURADA (volta ao normal)
+                lblLinhaTempo.setText("Menu Principal > Armazenamento > Estoque");
+            }
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+                lblLinhaTempo.setText("Menu Principal");
+            }
+        });
+        // Adiciona a tela ao desktop
+        desktop.add(estoque);
+        minimizarOutras(desktop,estoque);
+        // Atualiza a linha do tempo quando é aberto a tela Estoque
+        lblLinhaTempo.setText("Menu Principal > Armazenamento > Estoque");
+    }
+
+    // Metodo que abre a tela Encomenda
+    private void menuEncomenda(){
+        fecharAnterior(desktop,TelaEncomenda.class);
+        TelaEncomenda encomenda = new TelaEncomenda();
+        encomenda.setVisible(true);
+
+        // bloqueia o arraste da tela
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) encomenda.getUI();
+        for (MouseMotionListener l : ui.getNorthPane().getMouseMotionListeners()) {
+            ui.getNorthPane().removeMouseMotionListener(l);
+        }
+
+        // Metodos que editam a linha do tempo quando a janela encomenda é fechada, minimaza e maximizada
+        encomenda.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameIconified(InternalFrameEvent e) {
+                lblLinhaTempo.setText("Menu Principal");
+            }
+            @Override
+            public void internalFrameDeiconified(InternalFrameEvent e) {
+                // O que acontece quando a janela é RESTAURADA (volta ao normal)
+                lblLinhaTempo.setText("Menu Principal > Registro > Encomendas");
+            }
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+                lblLinhaTempo.setText("Menu Principal");
+            }
+        });
+        // Adiciona a tela ao desktop
+        desktop.add(encomenda);
+        minimizarOutras(desktop,encomenda);
+        // Atualiza a linha do tempo quando é aberto a tela encomenda
+        lblLinhaTempo.setText("Menu Principal > Registro > Encomendas");
     }
 }

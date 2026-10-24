@@ -313,18 +313,25 @@ public class TelaUsuario extends JInternalFrame {
     // Medodo do botão adicionar usuario
     private void adicionar(ActionEvent evt) {
         try{
-            Usuarios usuario = new Usuarios();
-            usuario.setNomeUsuario(txtNome.getText());
-            usuario.setLogin(txtLogin.getText());
-            usuario.setSenha(txtSenha.getText());
-            usuario.setPerfil(cbPerfil.getSelectedItem().toString());
-            if (txtNome.getText().isEmpty() || txtLogin.getText().isEmpty() || txtSenha.getText().isEmpty()){
-                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
-            }else {
-                dao.salvar(usuario);
-                carregarTabela();
-                limparCampos();
-                JOptionPane.showMessageDialog(null,"Usuário salvo com sucesso!");
+            // Verifica se a senha digitada tem 8 digitos
+            if (txtSenha.getText().length() > 8){
+                JOptionPane.showMessageDialog(null,"Senha muito grande: Max: 8 digitos");
+                return;
+            }else{
+                Usuarios usuario = new Usuarios();
+                usuario.setNomeUsuario(txtNome.getText());
+                usuario.setLogin(txtLogin.getText());
+                usuario.setSenha(txtSenha.getText());
+                usuario.setPerfil(cbPerfil.getSelectedItem().toString());
+
+                if (txtNome.getText().isEmpty() || txtLogin.getText().isEmpty() || txtSenha.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
+                }else {
+                    dao.salvar(usuario);
+                    carregarTabela();
+                    limparCampos();
+                    JOptionPane.showMessageDialog(null,"Usuário salvo com sucesso!");
+                }
             }
         }catch (Exception e){
             JOptionPane.showMessageDialog(null, "Erro ao salvar usuário: " + e.getMessage());
@@ -334,53 +341,66 @@ public class TelaUsuario extends JInternalFrame {
     // Medodo do botão editar usuario4
     private void editar(ActionEvent evt) {
         try{
-            if (idSelecionado == 0){
-                JOptionPane.showMessageDialog(null, "Selecione um Usuário.");
+            // Verifica se a senha digitada tem 8 digitos
+            if (txtSenha.getText().length() > 8){
+                JOptionPane.showMessageDialog(null,"Senha muito grande: Max: 8 digitos");
                 return;
+            }else{
+                // Verifica se um usuário foi selecionado
+                if (idSelecionado == 0){
+                    JOptionPane.showMessageDialog(null, "Selecione um Usuário.");
+                    return;
+                }
+                Usuarios usuario = new Usuarios();
+                usuario.setIdUsuario(idSelecionado);
+                usuario.setNomeUsuario(txtNome.getText());
+                usuario.setLogin(txtLogin.getText());
+                usuario.setSenha(txtSenha.getText());
+                usuario.setPerfil(cbPerfil.getSelectedItem().toString());
+                if (txtNome.getText().isEmpty() || txtLogin.getText().isEmpty() || txtSenha.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
+                }else {
+                    dao.atualizar(usuario);
+                    JOptionPane.showMessageDialog(null,"Usuário atualizado com sucesso!");
+                    carregarTabela();
+                    limparCampos();
+                    // Habilita novamente o botão adicionar
+                    btnAdicionar.setEnabled(true);
+                }
             }
-            Usuarios usuario = new Usuarios();
-            usuario.setIdUsuario(idSelecionado);
-            usuario.setNomeUsuario(txtNome.getText());
-            usuario.setLogin(txtLogin.getText());
-            usuario.setSenha(txtSenha.getText());
-            usuario.setPerfil(cbPerfil.getSelectedItem().toString());
-            if (txtNome.getText().isEmpty() || txtLogin.getText().isEmpty() || txtSenha.getText().isEmpty()){
-                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
+        }catch (Exception e){
+                JOptionPane.showMessageDialog(null,"Erro ao atualizar usuário: " + e.getMessage());
+        }
+    }
+    // Medodo do botão excluir usuario
+    private void excluir(ActionEvent evt) {
+        try{
+            // Verifica se a senha digitada tem 8 digitos
+            if (txtSenha.getText().length() > 8) {
+                JOptionPane.showMessageDialog(null, "Senha muito grande: Max: 8 digitos");
+                return;
             }else {
-                dao.atualizar(usuario);
-                JOptionPane.showMessageDialog(null,"Usuário atualizado com sucesso!");
+                // Verifica se um usuário foi selecionado
+                if (idSelecionado == 0){
+                    JOptionPane.showMessageDialog(null,"Selecione um usuário");
+                    return;
+                }
+                int resposta = JOptionPane.showConfirmDialog(
+                        this,
+                        "Tem certeza de que deseja excluir este usuário?",
+                        "Confirmação",
+                        JOptionPane.YES_NO_OPTION
+                );
+                if (resposta != JOptionPane.YES_OPTION){
+                    return;
+                }
+                dao.excluir(idSelecionado);
+                JOptionPane.showMessageDialog(null,"Usuário excluído com sucesso.");
                 carregarTabela();
                 limparCampos();
                 // Habilita novamente o botão adicionar
                 btnAdicionar.setEnabled(true);
             }
-        }catch (Exception e){
-            JOptionPane.showMessageDialog(null,"Erro ao atualizar usuário: " + e.getMessage());
-        }
-    }
-
-    // Medodo do botão excluir usuario
-    private void excluir(ActionEvent evt) {
-        try{
-            if (idSelecionado == 0){
-                JOptionPane.showMessageDialog(null,"Selecione um usuário");
-                return;
-            }
-            int resposta = JOptionPane.showConfirmDialog(
-                    this,
-                    "Tem certeza de que deseja excluir este usuário?",
-                    "Confirmação",
-                    JOptionPane.YES_NO_OPTION
-            );
-            if (resposta != JOptionPane.YES_OPTION){
-                return;
-            }
-            dao.excluir(idSelecionado);
-            JOptionPane.showMessageDialog(null,"Usuário excluído com sucesso.");
-            carregarTabela();
-            limparCampos();
-            // Habilita novamente o botão adicionar
-            btnAdicionar.setEnabled(true);
         }catch (Exception e){
             JOptionPane.showMessageDialog(null,"Erro ao excluir usuário: " + e.getMessage());
         }

@@ -35,19 +35,22 @@ public class ClienteDAO {
             ps.setString(3,cliente.getContato());
             ps.setString(4,cliente.getEndereco());
             ps.setInt(5,cliente.getIdCliente());
+            ps.execute();
         }catch (Exception e){
             e.printStackTrace();
         }
     }
     // Metodo READ cliente pelo nome
-    public List<Clientes> pesquisar(String nome){
+    public List<Clientes> pesquisar(String nomeCompleto){
         List<Clientes> lista = new ArrayList<>();
-        String sql = "SELECT * FROM clientes WHERE nome LIKE ? ORDER BY nome";
+        String sql = "SELECT * FROM clientes WHERE CONCAT(nome, ' ', sobrenome) LIKE ? " +
+                "OR sobrenome LIKE ? ORDER BY nome, sobrenome";
         try (
             Connection conexao = ConnectionFactory.getConnection();
             PreparedStatement ps = conexao.prepareStatement(sql)
         ){
-            ps.setString(1,nome + "%");
+            ps.setString(1,nomeCompleto + "%");
+            ps.setString(2,nomeCompleto + "%");
             try (ResultSet rs = ps.executeQuery()){
                 while (rs.next()){
                     Clientes cliente = new Clientes();
@@ -64,32 +67,6 @@ public class ClienteDAO {
         }
         return lista;
     }
-    // Metodo READ cliente por sobrenome
-    public List<Clientes> pesquisar_sobrenome(String sobrenome){
-        List<Clientes> lista = new ArrayList<>();
-        String sql = "SELECT * FROM clientes WHERE sobrenome LIKE ? ORDER BY sobrenome";
-        try (
-                Connection conexao = ConnectionFactory.getConnection();
-                PreparedStatement ps = conexao.prepareStatement(sql)
-        ){
-            ps.setString(1,sobrenome + "%");
-            try (ResultSet rs = ps.executeQuery()){
-                while (rs.next()){
-                    Clientes cliente = new Clientes();
-                    cliente.setIdCliente(rs.getInt("idCliente"));
-                    cliente.setNome(rs.getString("nome"));
-                    cliente.setSobrenome(rs.getString("sobrenome"));
-                    cliente.setContato(rs.getString("contato"));
-                    cliente.setEndereco(rs.getString("endereco"));
-                    lista.add(cliente);
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return lista;
-    }
-
     // Metodo DELETE cliente
     public void excluir (int id){
         String sql = "DELETE FROM clientes WHERE idCliente=?";
