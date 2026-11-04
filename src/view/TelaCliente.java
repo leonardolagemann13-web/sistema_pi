@@ -15,6 +15,7 @@ public class TelaCliente extends JInternalFrame {
     private JButton btnAdicionar;
     private JButton btnEditar;
     private JButton btnExcluir;
+    private JButton btnCancelar;
     private JLabel iconePesquisa;
     private JScrollPane scroll;
     private JLabel lblCamposObri;
@@ -36,7 +37,6 @@ public class TelaCliente extends JInternalFrame {
         carregarTabela();
     }
 
-    // Metodo parar criar a tabela
     private void criarTabela(){
         modelo = new DefaultTableModel();
         modelo.addColumn("ID");
@@ -46,28 +46,26 @@ public class TelaCliente extends JInternalFrame {
         modelo.addColumn("Endereço");
 
         tabela = new JTable(modelo){
-            // Metodo que faz com que a tabela não seja editavel
             public boolean isCellEditable(int rowIndex, int colIndex){
                 return false;
             }
         };
-        // Faz com que a tabela não seja interagivel com teclado
+
+        // Definindo a fonte da tabela
+        tabela.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 13));
+
         tabela.setFocusable(false);
-        // Faz com que não seja possivel mover as colunas da tabela
         tabela.getTableHeader().setReorderingAllowed(false);
 
-        // Permite adicionar apenas uma linha
         tabela.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Preencher os campos da tabela
                 preencherCampos();
             }
         });
         scroll = new JScrollPane(tabela);
     }
 
-    // Metodo que atualiza a tabela
     private void carregarTabela(){
         modelo.setRowCount(0);
         List<Clientes> lista = dao.listar();
@@ -82,29 +80,23 @@ public class TelaCliente extends JInternalFrame {
         }
     }
 
-    // devolve o texto da célula, ou "" se for nulo
     private String valorCelula(int linha, int coluna){
         Object valor = modelo.getValueAt(linha, coluna);
         return valor == null ? "" : valor.toString();
     }
 
-    // Metodo que adiciona os dados nos campos
     private void preencherCampos(){
-        // Obtem linha selecionada
         int linha = tabela.getSelectedRow();
         if (linha >= 0){
-            // Armazena o ID
             idSelecionado = Integer.parseInt(valorCelula(linha,0));
             txtNome.setText(valorCelula(linha,1));
             txtSobrenome.setText(valorCelula(linha,2));
             txtContato.setText(valorCelula(linha,3));
             txtEndereco.setText(valorCelula(linha,4));
-            // Desabilita o botão adicionar para evitar bugs
             btnAdicionar.setEnabled(false);
         }
     }
 
-    // Para preencher a tabela com a lista
     private void preencherTabela(List<Clientes> lista){
         modelo.setRowCount(0);
         for (Clientes c : lista){
@@ -118,7 +110,6 @@ public class TelaCliente extends JInternalFrame {
         }
     }
 
-    // Metodo responsavel por limpar os campos
     private void limparCampos(){
         idSelecionado = 0;
         txtNome.setText("");
@@ -127,10 +118,21 @@ public class TelaCliente extends JInternalFrame {
         txtEndereco.setText("");
     }
 
+    // Metodo que redimenciona os icones no swing
+    private ImageIcon redimensionarIcone(String caminho, int largura, int altura) {
+        ImageIcon icone = new ImageIcon(getClass().getResource(caminho));
+
+        Image imagem = icone.getImage().getScaledInstance(
+                largura,
+                altura,
+                Image.SCALE_SMOOTH
+        );
+
+        return new ImageIcon(imagem);
+    }
+
     // Componentes da tela
     private void componentes() {
-
-        // Adicionando os componentes
         dao = new ClienteDAO();
         txtPesquisa = new JTextField();
         txtContato = new JTextField();
@@ -140,6 +142,7 @@ public class TelaCliente extends JInternalFrame {
         btnAdicionar = new JButton();
         btnEditar = new JButton();
         btnExcluir = new JButton();
+        btnCancelar = new JButton();
         iconePesquisa = new JLabel();
         lblCamposObri = new JLabel();
         lblNome = new JLabel();
@@ -147,15 +150,15 @@ public class TelaCliente extends JInternalFrame {
         lblContato = new JLabel();
         lblEndereco = new JLabel();
 
-        // Definições da tela
         setClosable(true);
         setIconifiable(true);
         setMaximizable(false);
         setResizable(true);
         setTitle("Cadastro de Clientes");
+        ImageIcon icone = redimensionarIcone("/icones/cliente.png", 20,20);
+        setFrameIcon(icone);
         setPreferredSize(new Dimension(1150,655));
 
-        // Custumização dos componentes
         lblCamposObri.setFont(new Font("Tahoma",Font.PLAIN,12));
         lblCamposObri.setText("* Campos obrigatórios");
 
@@ -175,7 +178,6 @@ public class TelaCliente extends JInternalFrame {
         lblEndereco.setText("Endereço");
         txtEndereco.setFont(new Font("Tahoma",Font.PLAIN,12));
 
-        // Metodo que pesquisa o cliente pelo nome
         txtPesquisa.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -184,164 +186,144 @@ public class TelaCliente extends JInternalFrame {
         });
         iconePesquisa.setIcon(new ImageIcon(getClass().getResource("/icones/pesquisar.png")));
 
-        // Customização dos botões
-
-        // Adicionando icone
         btnAdicionar.setIcon(new ImageIcon(getClass().getResource("/icones/create.png")));
-        // Textinho de ajuda que aparece ao passar o mouse por cima do botão
         btnAdicionar.setToolTipText("Adicionar");
-        // Faz o cursor do mouse ser uma mão ao passar o mouse por cima
         btnAdicionar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnAdicionar.setPreferredSize(new Dimension(80,80));
-        // Adicionando função ao botão adicionar
         btnAdicionar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                // Chamando o metodo
-                adicionar(evt);
+                adicionar();
             }
         });
+        btnAdicionar.setBackground(new Color(255,255,255));
 
-        // Adicionando icone
         btnEditar.setIcon(new ImageIcon(getClass().getResource("/icones/update.png")));
-        // Textinho de ajuda que aparece ao passar o mouse por cima do botão
         btnEditar.setToolTipText("Editar");
-        // Faz o cursor do mouse ser uma mão ao passar o mouse por cima
         btnEditar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        // Adicionando função ao botão editar
+        btnEditar.setPreferredSize(new Dimension(80,80));
         btnEditar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                // Chamando o metodo
-                editar(evt);
+                editar();
             }
         });
+        btnEditar.setBackground(new Color(255,255,255));
 
-        // Adicionando o icone
         btnExcluir.setIcon(new ImageIcon(getClass().getResource("/icones/delete.png")));
-        // Textinho de ajuda que aparece ao passar o mouse por cima do botão
         btnExcluir.setToolTipText("Excluir");
-        // Faz o cursor do mouse ser uma mão ao passar o mouse por cima
         btnExcluir.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        // Adicionando função ao botão excluir
+        btnExcluir.setPreferredSize(new Dimension(80,80));
         btnExcluir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                // Chamando o metodo
-                excluir(evt);
+                excluir();
             }
         });
+        btnExcluir.setBackground(new Color(255,255,255));
 
-        // Adicionando a tabela
+        btnCancelar.setIcon(new ImageIcon(getClass().getResource("/icones/cancelar.png")));
+        btnCancelar.setToolTipText("Cancelar");
+        btnCancelar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCancelar.setPreferredSize(new Dimension(80,80));
+        btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                cancelar();
+            }
+        });
+        btnCancelar.setBackground(new Color(255,255,255));
+
         criarTabela();
 
-        // Definição do layout - Gerado pelo NetBeans
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
 
-        // Horizontalmente
+        // Horizontalmente - Pesquisa alinhada com a coluna dos inputs
         layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(104, 104, 104)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                        .addComponent(lblSobrenome)
-                                        .addComponent(lblContato)
-                                        .addComponent(lblEndereco)
-                                        .addComponent(lblNome))
-                                .addGap(35, 35, 35)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(scroll, GroupLayout.PREFERRED_SIZE, 749,
-                                                        GroupLayout.PREFERRED_SIZE)
-                                                .addContainerGap(168, Short.MAX_VALUE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING,
-                                                                false)
-                                                        .addComponent(txtEndereco, GroupLayout.DEFAULT_SIZE, 620,
-                                                         Short.MAX_VALUE)
-                                                        .addComponent(txtSobrenome, GroupLayout.DEFAULT_SIZE,
-                                                        620, Short.MAX_VALUE)
-                                                        .addComponent(txtContato)
-                                                        .addComponent(txtNome, GroupLayout.DEFAULT_SIZE,
-                                                        620, Short.MAX_VALUE)
-                                                        .addGroup(layout.createSequentialGroup()
-                                                        .addComponent(txtPesquisa, GroupLayout.PREFERRED_SIZE, 488,
-                                                        GroupLayout.PREFERRED_SIZE)
-                                                        .addGap(18, 18, 18)
-                                                        .addComponent(iconePesquisa)))
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout
-                                                .DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(lblCamposObri)
-                                                .addGap(58, 58, 58))))
-                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnAdicionar)
-                                .addGap(115, 115, 115)
-                                .addComponent(btnEditar)
-                                .addGap(117, 117, 117)
-                                .addComponent(btnExcluir)
-                                .addGap(336, 336, 336))
+                layout.createSequentialGroup()
+                        .addGap(52, 52, 52)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addComponent(lblNome)
+                                                .addComponent(lblSobrenome)
+                                                .addComponent(lblContato)
+                                                .addComponent(lblEndereco))
+                                        .addGap(110, 110, 110)
+                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(txtPesquisa, GroupLayout.PREFERRED_SIZE, 373, GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                        .addComponent(iconePesquisa)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(lblCamposObri))
+                                                .addGroup(layout.createSequentialGroup()
+                                                        .addGap(135, 135, 135)
+                                                        .addComponent(btnAdicionar, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(20, 20, 20)
+                                                        .addComponent(btnEditar, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(20, 20, 20)
+                                                        .addComponent(btnExcluir, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(20, 20, 20)
+                                                        .addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                                .addComponent(txtEndereco, GroupLayout.Alignment.LEADING)
+                                                .addComponent(txtContato, GroupLayout.Alignment.LEADING)
+                                                .addComponent(txtSobrenome, GroupLayout.Alignment.LEADING)
+                                                .addComponent(txtNome, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 621, GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(scroll, GroupLayout.DEFAULT_SIZE, 756, Short.MAX_VALUE))
+                .addGap(52, 52, 52)
         );
 
         // Verticalmente
         layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(31, 31, 31)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtPesquisa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-                                         GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(iconePesquisa)
-                                        .addComponent(lblCamposObri))
-                                .addGap(71, 71, 71)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtNome, GroupLayout.PREFERRED_SIZE, 37,
-                                         GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblNome))
-                                .addGap(26, 26, 26)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtSobrenome, GroupLayout.PREFERRED_SIZE, 37,
-                                        GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblSobrenome))
-                                .addGap(28, 28, 28)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtContato, GroupLayout.PREFERRED_SIZE, 37,
-                                         GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblContato))
-                                .addGap(26, 26, 26)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtEndereco, GroupLayout.PREFERRED_SIZE, 37,
-                                         GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblEndereco))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
-                                .addComponent(scroll, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
-                                .addGap(59, 59, 59)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(btnAdicionar)
-                                        .addComponent(btnEditar)
-                                        .addComponent(btnExcluir))
-                                .addGap(49, 49, 49))
+                layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtPesquisa, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(iconePesquisa)
+                                .addComponent(lblCamposObri))
+                        .addGap(25, 25, 25)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblNome)
+                                .addComponent(txtNome, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblSobrenome)
+                                .addComponent(txtSobrenome, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblContato)
+                                .addComponent(txtContato, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblEndereco)
+                                .addComponent(txtEndereco, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+                        .addGap(25, 25, 25)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnAdicionar, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnEditar, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnExcluir, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10)
+                        .addComponent(scroll, GroupLayout.PREFERRED_SIZE, 146, Short.MAX_VALUE)
+                        .addGap(20, 20, 20)
         );
         setBounds(0, 0, 1150, 655);
     }
 
-    // Metodos para os botões
-
-    // Metodo do botão adicionar cliente
-    private void adicionar(ActionEvent evt){
+    private void adicionar(){
         try{
             Clientes cliente = new Clientes();
             cliente.setNome(txtNome.getText());
             cliente.setSobrenome(txtSobrenome.getText());
             cliente.setContato(txtContato.getText());
             cliente.setEndereco(txtEndereco.getText());
-            // Verifica se os campos obrigatórios estão preenchidos
             if (txtNome.getText().isEmpty() || txtSobrenome.getText().isEmpty()){
                 JOptionPane.showMessageDialog(null,"Preencha todos os campos obrigatórios");
             }else {
                 dao.salvar(cliente);
-               // Criar um metodo que não deixe o usuario criar um cliente que já exista com o mesmo sobrenome
                 carregarTabela();
                 limparCampos();
                 JOptionPane.showMessageDialog(null,"Cliente salvo com sucesso!");
@@ -351,10 +333,8 @@ public class TelaCliente extends JInternalFrame {
         }
     }
 
-    // Metodo do botão editar cliente
-    private void editar(ActionEvent evt){
+    private void editar(){
         try{
-            // Verifica se um cliente foi selecionado
             if (idSelecionado == 0){
                 JOptionPane.showMessageDialog(null,"Selecione um Cliente.");
                 return;
@@ -365,7 +345,6 @@ public class TelaCliente extends JInternalFrame {
             cliente.setSobrenome(txtSobrenome.getText());
             cliente.setContato(txtContato.getText());
             cliente.setEndereco(txtEndereco.getText());
-            // Verifica se os campos obrigatórios estão preenchidos
             if (txtNome.getText().isEmpty() || txtSobrenome.getText().isEmpty()){
                 JOptionPane.showMessageDialog(null,"Preencha todos os campos obrigatórios");
             }else {
@@ -373,7 +352,6 @@ public class TelaCliente extends JInternalFrame {
                 JOptionPane.showMessageDialog(null,"Cliente atualizado com sucesso!");
                 carregarTabela();
                 limparCampos();
-                // Habilita novamente o botão adicionar
                 btnAdicionar.setEnabled(true);
             }
         }catch (Exception e){
@@ -381,10 +359,8 @@ public class TelaCliente extends JInternalFrame {
         }
     }
 
-    // Metodo do botão excluir cliente
-    private void excluir(ActionEvent evt){
+    private void excluir(){
         try{
-            // Verifica se um cliente foi selecionado
             if (idSelecionado == 0){
                 JOptionPane.showMessageDialog(null,"Selecione um cliente");
                 return;
@@ -402,10 +378,16 @@ public class TelaCliente extends JInternalFrame {
             JOptionPane.showMessageDialog(null,"Cliente excluído com sucesso.");
             carregarTabela();
             limparCampos();
-            // Habilita novamente o botão adicionar
             btnAdicionar.setEnabled(true);
         }catch (Exception e){
             JOptionPane.showMessageDialog(null,"Erro ao excluir cliente: " + e.getMessage());
         }
+    }
+
+    private void cancelar(){
+        txtPesquisa.setText("");
+        carregarTabela();
+        limparCampos();
+        btnAdicionar.setEnabled(true);
     }
 }

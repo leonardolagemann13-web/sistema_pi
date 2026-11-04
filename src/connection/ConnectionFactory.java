@@ -15,7 +15,8 @@ public class ConnectionFactory {
             // Driver para a conexão apartir do URL do usuário e da senha
             return DriverManager.getConnection(URL,USER,PASSWORD);
         }catch (Exception e){
-            throw new RuntimeException("Erro ao conectar no banco: ", e);
+            System.out.println("Banco de dados indisponível: " + e.getMessage());
+            return null;
         }
     }
 }

@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.awt.*;
 import dao.UsuarioDAO;
 import model.Usuarios;
+import connection.ConnectionFactory;
 
 public class TelaLogin extends JFrame {
     // Declaração das variáveis
@@ -47,6 +48,30 @@ public class TelaLogin extends JFrame {
     // Construtor
     public TelaLogin() {
         componentes();
+
+        // Faz a verificação para mudar o icone do lblStatus de acordo com o banco ligado ou não
+        ConnectionFactory conexao = new ConnectionFactory();
+
+        if (conexao.getConnection() != null) {
+            lblStatus.setIcon(new ImageIcon(getClass().getResource("/icones/dbok.png")
+            ));
+        } else {
+            lblStatus.setIcon(new ImageIcon(getClass().getResource("/icones/dberror.png")
+            ));
+        }
+    }
+
+    // Metodo que redimenciona os icones no swing
+    private ImageIcon redimensionarIcone(String caminho, int largura, int altura) {
+        ImageIcon icone = new ImageIcon(getClass().getResource(caminho));
+
+        Image imagem = icone.getImage().getScaledInstance(
+                largura,
+                altura,
+                Image.SCALE_SMOOTH
+        );
+
+        return new ImageIcon(imagem);
     }
 
     // Componentes da tela
@@ -54,7 +79,7 @@ public class TelaLogin extends JFrame {
 
         setTitle("Login");
         // Define o ícone da janela
-        ImageIcon iconeTitulo = new ImageIcon(getClass().getResource("/icones/queijoTitulo.png"));
+        ImageIcon iconeTitulo = redimensionarIcone("/icones/queijoTitulo.png",20,20);
         setIconImage(iconeTitulo.getImage());
 
         // Adicionando variaveis
@@ -70,8 +95,6 @@ public class TelaLogin extends JFrame {
         lblSenha.setText("Senha");
 
         lblUsuario.setText("Usuário");
-
-        lblStatus.setText("Status");
 
         btnLogin.setText("Login");
 
@@ -101,6 +124,10 @@ public class TelaLogin extends JFrame {
 
         // Adicionando a interação com o botão
         btnLogin.addActionListener(e->entrar());
+        btnLogin.setBackground(new Color(255,255,255));
+        btnLogin.setForeground(new Color(52,94,56));
+        // Faz o Enter acionar o botão de login
+        getRootPane().setDefaultButton(btnLogin);
 
         // Tamanho da tela de login
         setSize(new Dimension(497, 281));

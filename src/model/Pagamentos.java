@@ -1,12 +1,14 @@
 package model;
 
+import java.time.LocalDate;
+
 public class Pagamentos {
     // Declaração dos atributos
     private int idPagamento;
     private Encomendas idEncomenda;
     private double valorTotal;
     private String formaPagamento;
-    private String dataPagamento;
+    private LocalDate dataPagamento;
 
     // Getters e Setters
 
@@ -28,7 +30,7 @@ public class Pagamentos {
         return formaPagamento;
     }
 
-    public String getDataPagamento() {
+    public LocalDate getDataPagamento() {
         return dataPagamento;
     }
 
@@ -50,7 +52,7 @@ public class Pagamentos {
         this.formaPagamento = formaPagamento;
     }
 
-    public void setDataPagamento(String dataPagamento) {
+    public void setDataPagamento(LocalDate dataPagamento) {
         this.dataPagamento = dataPagamento;
     }
 

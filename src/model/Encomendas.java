@@ -9,6 +9,7 @@ public class Encomendas {
     private LocalDate dataPedido;
     private LocalDate dataPrevisao;
     private LocalDate dataPrevisaoPagamento;
+    private LocalDate dataEntrega;
     private String tipoEntrega;
     private String statusEntrega;
     private String statusPagamento;
@@ -36,6 +37,10 @@ public class Encomendas {
 
     public LocalDate getDataPrevisao() {
         return dataPrevisao;
+    }
+
+    public LocalDate getDataEntrega() {
+        return dataEntrega;
     }
 
     public String getTipoEntrega() {
@@ -75,6 +80,10 @@ public class Encomendas {
         this.dataPrevisaoPagamento = dataPrevisaoPagamento;
     }
 
+    public void setDataEntrega(LocalDate dataEntrega) {
+        this.dataEntrega = dataEntrega;
+    }
+
     public void setTipoEntrega(String tipoEntrega) {
         this.tipoEntrega = tipoEntrega;
     }
@@ -93,10 +102,7 @@ public class Encomendas {
 
     // Para aparecer no ComboBox
     @Override
-    public String toString(){
-        if (cliente != null){
-            return cliente.getNome();
-        }
-        return String.valueOf(idEncomenda);
+    public String toString() {
+        return cliente.getNome() + " " + cliente.getSobrenome();
     }
 }

@@ -4,11 +4,12 @@ import model.Produtos;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 public class ProdutoDAO {
     // Metodo CREATE produto
-    public void salvar(Produtos produto){
+    public void salvar(Produtos produto)throws SQLException {
         String sql = "INSERT INTO produtos(nome,preco,caracteristicas) VALUES(?,?,?)";
         try(
             Connection conexao = ConnectionFactory.getConnection();
@@ -18,12 +19,10 @@ public class ProdutoDAO {
             ps.setDouble(2,produto.getPreco());
             ps.setString(3, produto.getCaracteristicas());
             ps.execute();
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
     // Metodo UPDATE produto
-    public void atualizar(Produtos produto){
+    public void atualizar(Produtos produto)throws SQLException{
         String sql = "UPDATE produtos SET nome=?,preco=?,caracteristicas=? WHERE idProduto=?";
         try (
                 Connection conexao = ConnectionFactory.getConnection();
@@ -34,8 +33,6 @@ public class ProdutoDAO {
             ps.setString(3, produto.getCaracteristicas());
             ps.setInt(4,produto.getIdProduto());
             ps.execute();
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
     // Metodo READ produtos
@@ -63,7 +60,7 @@ public class ProdutoDAO {
         return lista;
     }
     // Metodo DELETE cliente
-    public void excluir(int id){
+    public void excluir(int id)throws SQLException{
         String sql = "DELETE FROM produtos WHERE idProduto=?";
         try(
             Connection conexao = ConnectionFactory.getConnection();
@@ -71,8 +68,6 @@ public class ProdutoDAO {
         ){
             ps.setInt(1,id);
             ps.execute();
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
     // Metodo para listar os produtos
